@@ -2,6 +2,8 @@
  * Created by zhangzuohua on 2018/1/22.
  */
 export default urlConfig = {
+
+
     baseURL: 'http://jianjie.92kaifa.com',
     //最新更新
     newList: '/e/api/?getJson=new',
@@ -21,3 +23,5 @@ export default urlConfig = {
     thumbDownUrl:'/e/public/digg/post/diggbot.php',
 }
 //http://h8.vc/e/api/?getJson=
+//这个域名是复制文本添加的域名
+//m.jianjie8.com

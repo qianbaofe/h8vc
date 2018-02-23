@@ -51,6 +51,9 @@ export default class Home extends Component {
             visible:false,
             ViewHeight:new Animated.Value(0)
         };
+        //每次请求需要需要加pagenumber
+        this.requestPageNumber = 0;
+
     }
     componentWillMount() {
      this._ViewHeight = new Animated.Value(0);
@@ -71,7 +74,8 @@ export default class Home extends Component {
             let DeepCopyData = [].concat(JSON.parse(JSON.stringify(this.FlatListData)));
             DeepCopyData[index].isCopyed = true;
             this.flatList.setData(DeepCopyData);
-            Clipboard.setString(item.smalltext && item.smalltext.replace(/^(\r\n)|(\n)|(\r)/,"") + "http://m.h8.vc/detail/" + item.classid + '/' + item.id);
+            Clipboard.setString(item.smalltext && item.smalltext.replace(/^(\r\n)|(\n)|(\r)/,"") + "http://m.jianjie8.com/detail/" + item.classid + '/' + item.id);
+            console.log('复制的文本',item.smalltext && item.smalltext.replace(/^(\r\n)|(\n)|(\r)/,"") + "http://m.jianjie8.com/detail/" + item.classid + '/' + item.id)
             Toast.show('复制成功', {
                 duration: Toast.durations.SHORT,
                 position: Toast.positions.CENTER,
@@ -232,6 +236,9 @@ export default class Home extends Component {
             visible:false
         });
     };
+    dealWithrequestPage = () =>{
+      return  this.requestPageNumber > 0 ? '&page=' + this.requestPageNumber : ''
+    }
     loadData = (resolve) => {
         let url = '';
         if (!this.props.data) {
@@ -239,19 +246,24 @@ export default class Home extends Component {
         }
         switch (this.props.data.classid) {
             case '0':
-                url = urlConfig.baseURL + urlConfig.newList;
+               // url = urlConfig.baseURL + urlConfig.newList;
+                url = urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + this.dealWithrequestPage();
                 break;
-            case '1':
-                url =  this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.randomList + '&num=' + '1' : urlConfig.baseURL + urlConfig.randomList;
-                break;
+            // case '1':
+            //    // url =  this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.randomList + '&num=' + '1' : urlConfig.baseURL + urlConfig.randomList;
+            //     url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + '&num=' + '1' : urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid;
+            //     break;
             default:
-                url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + '&num=' + '1':urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid;
+                url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + '&num=' + '1'+ this.dealWithrequestPage():urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid+ this.dealWithrequestPage();
         }
+        console.log('url',url);
         _fetch(fetch(url),30000)
             .then((response) =>  response.json())
             .then((responseJson) => {
                 console.log('XXX',responseJson,url);
                 if (responseJson.status === '1') {
+                    //每次请求的page加一
+                    this.requestPageNumber += 1;
                     this.updateNumMessage = responseJson.updateNum;
                     if (this.updateNumMessage && this.isNotfirstFetch) {  setTimeout(() => {
                         this.setState({loadNewData: true})
@@ -493,13 +505,10 @@ export default class Home extends Component {
         }
         switch (this.props.data.classid) {
             case '0':
-                url = urlConfig.baseURL + urlConfig.randomList;
-                break;
-            case '1':
-                url = urlConfig.baseURL + urlConfig.randomList;
+                url = urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + this.dealWithrequestPage();
                 break;
             default:
-                url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + '&num=' + '1':urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid;
+                url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + '&num=' + '1'+ this.dealWithrequestPage():urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid+ this.dealWithrequestPage();
 
         }
         _fetch(fetch(url),30000)
@@ -507,6 +516,7 @@ export default class Home extends Component {
             .then((responseJson) => {
                 console.log('XXX',responseJson,url);
                 if (responseJson.status === '1') {
+                    this.requestPageNumber += 1;
                     this.flatList && this.flatList.addData(this.dealWithLoadMoreData(responseJson.result));
                     this.FlatListData = this.dealWithLoadMoreData(responseJson.result);
                 }else{
