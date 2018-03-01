@@ -21,13 +21,13 @@
     {
       "size" : "29x29",
       "idiom" : "iphone",
-      "filename" : "76.png",
+      "filename" : "87.png",
       "scale" : "3x"
     },
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "80.png",
+      "filename" : "icon80.png",
       "scale" : "2x"
     },
     {
@@ -51,7 +51,7 @@
     {
       "size" : "1024x1024",
       "idiom" : "ios-marketing",
-      "filename" : "1701518077688_.pic.jpg",
+      "filename" : "1519817068777.png",
       "scale" : "1x"
     }
   ],

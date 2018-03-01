@@ -32,7 +32,8 @@ import {
     NativeModules,
     ImageBackground,
     FlatList,
-    AppState
+    AppState,
+
 } from 'react-native';
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import Button from '../components/Button';
@@ -80,8 +81,8 @@ export  default  class ScrollTabView extends Component {
             sectionList: [],
             page: 0,
         };
-    }
 
+    }
     readCache = () => {
         READ_CACHE("GesPWD", (res) => {
             if (res && res.length > 0) {
@@ -113,12 +114,11 @@ export  default  class ScrollTabView extends Component {
             this.codePushDownloadDidProgress.bind(this)
         );
     }
-
     componentWillMount() {
         //监听状态改变事件
         AppState.addEventListener('change', this.handleAppStateChange);
-    }
 
+    }
     componentDidMount() {
         if (Platform.OS === 'android'){
             NativeModules.NativeUtil.StatusBar();
@@ -138,12 +138,10 @@ export  default  class ScrollTabView extends Component {
             this.loadData();
         });
     }
-
     componentWillUnmount() {
         //删除状态改变事件监听
         AppState.removeEventListener('change');
     }
-
     handleAppStateChange = (appState) => {
         console.log('当前状态为:' + appState);
         if (appState === 'active') {
@@ -189,15 +187,6 @@ export  default  class ScrollTabView extends Component {
         }).then((res) => res.json()).then((responseJson) => {
             console.log("ZZZZ",responseJson);
             if ((responseJson.result instanceof Array) && responseJson.result.length > 0) {
-                // responseJson.result.unshift({
-                //     "classname": "最新",
-                //     "classid": "new",
-                //     "tbname": "article"
-                // }, {
-                //     "classname": "随机",
-                //     "classid": "rand",
-                //     "tbname": "article"
-                // })
                 WRITE_CACHE(storageKeys.sectionList, responseJson.result);
                 this.setState({sectionList: responseJson.result});
             }

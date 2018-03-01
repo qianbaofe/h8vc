@@ -47,7 +47,7 @@ export  default  class web extends Component {
             return (
                 <ImageBackground style={{...header}} source={require('../assets/backgroundImageHeader.png')} resizeMode='cover'>
                 <TouchableOpacity activeOpacity={1} onPress={() => {
-                    navigation.goBack();
+                    navigation.goBack(null);
                 }}>
                     <View style={{justifyContent:'center',marginLeft:10,alignItems:'center',height:43.7}}>
                         <Image source={require('../assets/backIconWhite.png')} style={{width:20,height:20}}/>

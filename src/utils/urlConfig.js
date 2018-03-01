@@ -4,16 +4,19 @@
 export default urlConfig = {
 
 
-    baseURL: 'http://jianjie.92kaifa.com',
+  //  baseURL: 'http://jianjie.92kaifa.com',
+    baseURL: 'http://h8.vc',
     //最新更新
-    newList: '/e/api/?getJson=new',
-   // 随机穿越
-    randomList: '/e/api/?getJson=rand',
+   //  newList: '/e/api/?getJson=new',
+   // // 随机穿越
+   //  randomList: '/e/api/?getJson=rand',
    //待处理
    //栏目列表 http://jianjie.92kaifa.com/e/api/getNewsClass.php
-    sectionList:'/e/api/?getJson=class',
+   // sectionList:'/e/api/?getJson=class',
+     sectionList:'/e/api/list/new.php?getJson=class',
     //栏目列表数据后面拼接&classid=3
-    sectionListData:'/e/api/?getJson=column',
+   // sectionListData:'/e/api/?getJson=column',
+    sectionListData:'/e/api/list/new.php?getJson=column',
     //发布地址
     pubLishUrl:'http://m.h8.vc/fromapp',
 

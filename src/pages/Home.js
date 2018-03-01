@@ -39,6 +39,7 @@ const HEIGHT = Dimensions.get('window').height;
 import PullList from '../components/pull/PullList'
 import storageKeys from '../utils/storageKeyValue'
 import * as WeChat from 'react-native-wechat';
+import Icon from 'react-native-vector-icons/FontAwesome';
 export default class Home extends Component {
     static navigationOptions = {
     };
@@ -52,7 +53,7 @@ export default class Home extends Component {
             ViewHeight:new Animated.Value(0)
         };
         //每次请求需要需要加pagenumber
-        this.requestPageNumber = 0;
+        this.requestPageNumber = 1;
 
     }
     componentWillMount() {
@@ -237,7 +238,7 @@ export default class Home extends Component {
         });
     };
     dealWithrequestPage = () =>{
-      return  this.requestPageNumber > 0 ? '&page=' + this.requestPageNumber : ''
+      return  this.requestPageNumber > 1 ? '&page=' + this.requestPageNumber : ''
     }
     loadData = (resolve) => {
         let url = '';
@@ -247,31 +248,28 @@ export default class Home extends Component {
         switch (this.props.data.classid) {
             case '0':
                // url = urlConfig.baseURL + urlConfig.newList;
-                url = urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + this.dealWithrequestPage();
+                url = urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid;
                 break;
             // case '1':
-            //    // url =  this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.randomList + '&num=' + '1' : urlConfig.baseURL + urlConfig.randomList;
-            //     url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + '&num=' + '1' : urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid;
+            //    // url =  this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.randomList  : urlConfig.baseURL + urlConfig.randomList;
+            //     url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid : urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid;
             //     break;
             default:
-                url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + '&num=' + '1'+ this.dealWithrequestPage():urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid+ this.dealWithrequestPage();
+                url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid : urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid;
         }
-        console.log('url',url);
         _fetch(fetch(url),30000)
             .then((response) =>  response.json())
             .then((responseJson) => {
-                console.log('XXX',responseJson,url);
+                console.log('urlloadDatarespond',responseJson,url);
                 if (responseJson.status === '1') {
-                    //每次请求的page加一
-                    this.requestPageNumber += 1;
                     this.updateNumMessage = responseJson.updateNum;
                     if (this.updateNumMessage && this.isNotfirstFetch) {  setTimeout(() => {
                         this.setState({loadNewData: true})
                     }, 500)};
-                    console.log('xxxxxx',responseJson.result);
+                    console.log('loadDataResult',responseJson.result);
                     this.flatList && this.flatList.setData(this.dealWithLongArray(responseJson.result), 0);
-                    this.FlatListData = this.dealWithLongArray(responseJson.result);
-                    console.log('xxxxxx1',this.FlatListData);
+                   // this.FlatListData = this.dealWithLongArray(responseJson.result);
+                    console.log('loadDataFlatListData',this.FlatListData);
                     resolve &&  resolve();
                     WRITE_CACHE(storageKeys.homeList + 'page' + this.props.index,responseJson.result);
                     setTimeout(() => {
@@ -315,11 +313,22 @@ export default class Home extends Component {
     }
     dealWithLongArray = (dataArray) => {
        // let waitDealArray = this.state.data.concat(dataArray);
-        let waitDealArray = dataArray.concat(this.FlatListData).filter((value)=>{return !(!value || value === "");});
+        //下拉刷新来几条数据，就对应的删除几条数据 ，以便填充
+        let initArray = [];
+        // console.log('789', sbArray);
+        if (this.FlatListData){
+            if (this.FlatListData.length > dataArray.length ){
+               initArray = this.FlatListData.slice(dataArray.length,this.FlatListData.length);
+            }else{
+                 initArray = [];
+            }
+        }
+        let waitDealArray = dataArray.concat(initArray).filter((value)=>{return !(!value || value === "");});
         if (waitDealArray.length >= 50) {
             waitDealArray = waitDealArray.slice(0, 50);
             console.log('处理过的array', waitDealArray);
         }
+         this.FlatListData = waitDealArray;
         return waitDealArray;
     }
     dealWithLoadMoreData = (dataArray) => {
@@ -331,6 +340,7 @@ export default class Home extends Component {
             waitDealArray = waitDealArray.slice(waitDealArray.length -50, waitDealArray.length);
             console.log('处理过的array', waitDealArray);
         }
+        this.FlatListData = waitDealArray;
         return waitDealArray;
     }
     refreshing = () => {
@@ -388,7 +398,6 @@ export default class Home extends Component {
                 headers: {},
                 body: formData
             }).then((respond) => {
-                console.log('XXX', respond._bodyInit);
                 let message = '';
                 let array = respond._bodyInit.split('|');
                 if (array.length > 0) {
@@ -500,6 +509,7 @@ export default class Home extends Component {
         // }
 
         let url = '';
+        this.requestPageNumber += 1;
         if (!this.props.data) {
             return;
         }
@@ -508,17 +518,16 @@ export default class Home extends Component {
                 url = urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + this.dealWithrequestPage();
                 break;
             default:
-                url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + '&num=' + '1'+ this.dealWithrequestPage():urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid+ this.dealWithrequestPage();
+                url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid +  this.dealWithrequestPage():urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid+ this.dealWithrequestPage();
 
         }
         _fetch(fetch(url),30000)
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log('XXX',responseJson,url);
+                console.log('XXXloadMore',responseJson,url);
                 if (responseJson.status === '1') {
-                    this.requestPageNumber += 1;
-                    this.flatList && this.flatList.addData(this.dealWithLoadMoreData(responseJson.result));
-                    this.FlatListData = this.dealWithLoadMoreData(responseJson.result);
+                    this.flatList && this.flatList.setData(this.dealWithLoadMoreData(responseJson.result));
+                  //  this.FlatListData = this.dealWithLoadMoreData(responseJson.result);
                 }else{
                     Toast.show(responseJson.message, {
                         duration: Toast.durations.SHORT,
