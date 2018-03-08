@@ -12,9 +12,10 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
+#import <UMCommon/UMCommon.h>           // 公共组件是所有友盟产品的基础组件，必选
+#import <UMAnalytics/MobClick.h>
 
 @implementation AppDelegate
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   NSURL *jsCodeLocation;
@@ -32,7 +33,9 @@
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
-
+  //友盟统计
+   [UMConfigure initWithAppkey:@"5a8e2571a40fa37e2f0001e1" channel:@"App Store"];
+  [MobClick setScenarioType:E_UM_NORMAL];
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;

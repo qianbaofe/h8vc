@@ -68,3 +68,6 @@
 -dontwarn java.nio.file.*
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn okio.**
+
+#umeng 统计
+-keep class com.umeng.commonsdk.** {*;}

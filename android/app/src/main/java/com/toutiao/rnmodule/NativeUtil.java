@@ -111,6 +111,19 @@ public class NativeUtil extends ReactContextBaseJavaModule {
                 popupWindow.dismiss();
             }
         });
+
+        LinearLayout report = (LinearLayout)linearlayout.findViewById(R.id.report);
+        report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                params.putInt("wechat",3);
+                promise.resolve(params);
+                popupWindow.dismiss();
+            }
+        });
+
+
+
         View c = linearlayout.findViewById(R.id.cancel);
         c.setOnClickListener(new View.OnClickListener() {
             @Override

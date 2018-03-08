@@ -5,6 +5,8 @@ import android.os.Bundle;
 import com.facebook.react.shell.MainReactPackage;
 
 import com.facebook.react.ReactActivity;
+import com.umeng.analytics.MobclickAgent;
+
 import org.devio.rn.splashscreen.SplashScreen;
 
 import java.util.Arrays;
@@ -26,6 +28,18 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "toutiao";
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
 
