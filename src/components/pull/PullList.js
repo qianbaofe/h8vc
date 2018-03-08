@@ -226,7 +226,7 @@ export default class PullList extends Pullable {
                       scrollEnabled={this.state.scrollEnabled}
                       refreshing={false}
                       keyExtractor={(item, index) => {return index}}
-                      onEndReachedThreshold={1}
+                      onEndReachedThreshold={0}
                       data={this.state.data}
                       ListFooterComponent={this.renderFooter}
                       windowSize={10}

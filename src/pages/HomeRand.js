@@ -88,7 +88,6 @@ export default class Home extends Component {
     }
 
     share = async()=>{
-    //    alert(JSON.stringify(this._shareItem));
         let data = await NativeModules.NativeUtil.showDialog();
         if(data){
             WeChat.isWXAppInstalled().then((isInstalled) => {
@@ -155,8 +154,6 @@ export default class Home extends Component {
                     //         Toast.show(error.message);
                     //     }
                     // });
-
-
 
                 } else {
                     WeChat.shareToTimeline({
@@ -262,14 +259,14 @@ export default class Home extends Component {
         switch (this.props.data.classid) {
             case '0':
                // url = urlConfig.baseURL + urlConfig.newList;
-                url = urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid;
+                url = urlConfig.baseURL + urlConfig.sectionListDataRand + '&classid=' + this.props.data.classid;
                 break;
             // case '1':
             //    // url =  this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.randomList  : urlConfig.baseURL + urlConfig.randomList;
             //     url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid : urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid;
             //     break;
             default:
-                url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid : urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid;
+                url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListDataRand + '&classid=' + this.props.data.classid : urlConfig.baseURL + urlConfig.sectionListDataRand + '&classid=' + this.props.data.classid;
         }
         _fetch(fetch(url),30000)
             .then((response) =>  response.json())
@@ -298,6 +295,7 @@ export default class Home extends Component {
                         }else{}
                     },(err)=>{
                     });
+
                     Toast.show(responseJson.message, {
                         duration: Toast.durations.SHORT,
                         position: Toast.positions.CENTER,
@@ -453,10 +451,8 @@ export default class Home extends Component {
                // this.props.navigation.navigate('Detail', {data: this.state.data[index]});
                // /^\r+|\n+$/g
                // .replace(/^(\r\n)|(\n)|(\r)$/g,"")
-                // <Image style={{width: 20, height: 20}} source={item.isLike ?require('../assets/upRed.jpg') : require('../assets/up.jpg')}/>
 
             }}>
-
                 <View>
                     {index === 0 ? <View style={{width:WIDTH,height:10,backgroundColor:Color.f5f5f5}}/> :<View/>}
                     <View style={{backgroundColor: 'white',paddingHorizontal:15,paddingTop:15}}>
@@ -543,10 +539,10 @@ export default class Home extends Component {
         }
         switch (this.props.data.classid) {
             case '0':
-                url = urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid + this.dealWithrequestPage();
+                url = urlConfig.baseURL + urlConfig.sectionListDataRand + '&classid=' + this.props.data.classid + this.dealWithrequestPage();
                 break;
             default:
-                url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid +  this.dealWithrequestPage():urlConfig.baseURL + urlConfig.sectionListData + '&classid=' + this.props.data.classid+ this.dealWithrequestPage();
+                url = this.isNotfirstFetch ? urlConfig.baseURL + urlConfig.sectionListDataRand + '&classid=' + this.props.data.classid +  this.dealWithrequestPage():urlConfig.baseURL + urlConfig.sectionListDataRand + '&classid=' + this.props.data.classid+ this.dealWithrequestPage();
 
         }
         _fetch(fetch(url),30000)
@@ -599,9 +595,20 @@ export default class Home extends Component {
 // style={{backgroundColor: 'white'}}
 // ref={(c) => {this.flatList = c}}
 // ifRenderFooter={this.props.index !== 1 ? false : true}
+// {this.state.loadNewData ? <View style={{
+//     height: 40,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     backgroundColor: '#C9E4F7',
+//     position:'absolute',
+//     left:0,
+//     right:0,
+//     top:0
+// }}>
+// <Text style={{color: '#4884BE'}}>{this.updateNumMessage}</Text>
+// </View> : <View/>}
 //
 // />
-    //  <Text style={{color: '#4884BE'}}>{this.updateNumMessage}</Text>
     _keyExtractor = (item, index) => index;
     render() {
         return (

@@ -436,6 +436,7 @@ const defaultHeaderStyles = StyleSheet.create({
         height: defaultTopIndicatorHeight,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor:Color.f5f5f5,
     },
     status: {
         flexDirection: 'row',

@@ -34,6 +34,7 @@ import {
     FlatList,
     AppState,
     NetInfo
+
 } from 'react-native';
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import Button from '../components/Button';
@@ -41,7 +42,7 @@ const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 import {ifIphoneX} from '../utils/iphoneX';
 import _fetch from  '../utils/_fetch'
-import Home from './Home';
+import HomeRand from './HomeRand';
 import storageKeys from '../utils/storageKeyValue'
 import codePush from 'react-native-code-push'
 import SplashScreen from 'react-native-splash-screen'
@@ -51,21 +52,20 @@ import baseConfig from '../utils/baseConfig';
 import * as WeChat from 'react-native-wechat';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconSimple from 'react-native-vector-icons/SimpleLineIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import urlConfig  from  '../../src/utils/urlConfig';
 //<View style={{...header}}>
+// <Image source={require('../assets/reload.png')} style={{width: 25, height: 25}}/>
 export  default  class ScrollTabView extends Component {
     static navigationOptions = {
-        tabBarLabel: '最新',
+        tabBarLabel: '随机',
         tabBarIcon: ({tintColor,focused}) => (
-            <MaterialCommunityIcons name="new-box" size={22} color={focused ? "red":'black'} />
+            <Icon name="random" size={22} color={focused ? "red":'black'} />
         ),
         header: ({navigation}) => {
             return (
                 <ImageBackground style={{...header}} source={require('../assets/backgroundImageHeader.png')} resizeMode='cover'>
                     <TouchableOpacity activeOpacity={1} onPress={() => {
-                        navigation.state.routes[0].routes[0].params.leftFuc && navigation.state.routes[0].routes[0].params.leftFuc();
+                        navigation.state.routes[0].routes[1].params.leftFuc && navigation.state.routes[0].routes[1].params.leftFuc();
                     }}>
                         <View style={{justifyContent: 'center', marginLeft: 10, alignItems: 'center', height: 43.7}}>
                             <IconSimple name="refresh" size={25} color='white'/>
@@ -73,7 +73,7 @@ export  default  class ScrollTabView extends Component {
                     </TouchableOpacity>
                     <Text style={{fontSize: 17, textAlign: 'center', lineHeight: 43.7, color: 'white', fontWeight:'100'}}>哈吧</Text>
                     <TouchableOpacity activeOpacity={1} onPress={() => {
-                        navigation.state.routes[0].routes[0].params.rightFuc && navigation.state.routes[0].routes[0].params.rightFuc();
+                        navigation.state.routes[0].routes[1].params.rightFuc && navigation.state.routes[0].routes[1].params.rightFuc();
                     }}>
                         <View style={{justifyContent: 'center', marginRight: 10, alignItems: 'center', height: 43.7}}>
                             <MaterialIcons name="add" size={35} color='white'/>
@@ -127,7 +127,6 @@ export  default  class ScrollTabView extends Component {
         //监听状态改变事件
         AppState.addEventListener('change', this.handleAppStateChange);
         NetInfo.addEventListener('connectionChange', this.handleConnectivityChange);
-
     }
     componentDidMount() {
         if (Platform.OS === 'android'){
@@ -135,7 +134,7 @@ export  default  class ScrollTabView extends Component {
         }
         SplashScreen.hide();
         this.CodePushSync();
-        WeChat.registerApp('wxd750cac4fb66b983');
+       // WeChat.registerApp('wxd750cac4fb66b983');
         this.props.navigation.setParams({
             rightFuc: () => {
                 let url = '';
@@ -144,7 +143,6 @@ export  default  class ScrollTabView extends Component {
                 }else{
                     url = urlConfig.pubLishUrl + '/?classid=' + global.activeClassId;
                 }
-
                 this.props.navigation.navigate('Web',{url:url});
             },
             leftFuc: () => {
@@ -203,7 +201,7 @@ export  default  class ScrollTabView extends Component {
         }
     }
     loadData = () => {
-        let url = urlConfig.baseURL + urlConfig.sectionList;
+        let url = urlConfig.baseURL + urlConfig.sectionListRand;
         RNFetchBlob.config({fileCache: true, ...baseConfig.BaseTimeOut}).fetch('GET', url, {
             ...baseConfig.BaseHeaders,
         }).then((res) => res.json()).then((responseJson) => {
@@ -258,11 +256,10 @@ export  default  class ScrollTabView extends Component {
             })
             this.setState({page: page});
         }
-
         renderContent = (sectionList) => {
             let list = [];
             list.push(sectionList.map((data, index) => {
-                return <Home tabLabel={data.classname} data={data} {...this.props} pageNumber={(number) => {
+                return <HomeRand tabLabel={data.classname} data={data} {...this.props} pageNumber={(number) => {
                     this.pageNumber(number)
                 }} index={index}/>
             }));
