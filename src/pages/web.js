@@ -66,6 +66,10 @@ export  default  class web extends Component {
     };
     constructor(props) {
         super(props);
+        this.state = {
+            cookies    : {},
+            webViewUrl : ''
+        }
     }
     onNavigationStateChange(e) {
         this.props.navigation.setParams({
@@ -76,10 +80,43 @@ export  default  class web extends Component {
     componentDidMount() {
         if (this.props.navigation.state.params && this.props.navigation.state.params.url){
             this.pubLishUrl = this.props.navigation.state.params.url;
+            console.log('publishUrl',this.pubLishUrl);
         }
 
     }
+    _onMessage = (event) => {
+        const { data } = event.nativeEvent;
+        const cookies  = data.split(';'); // `csrftoken=...; rur=...; mid=...; somethingelse=...`
+        console.log('cookieXXXXXX',cookies);
+
+        cookies.forEach((cookie) => {
+            const c = cookie.trim().split('=');
+
+            const new_cookies = this.state.cookies;
+            new_cookies[c[0]] = c[1];
+
+            this.setState({ cookies: new_cookies });
+        });
+
+       // this._checkNeededCookies();
+    }
     render() {
+       //  const patchPostMessageFunction = function() {
+       //      var originalPostMessage = window.postMessage;
+       //
+       //      var patchedPostMessage = function(message, targetOrigin, transfer) {
+       //          originalPostMessage(message, targetOrigin, transfer);
+       //      };
+       //
+       //      patchedPostMessage.toString = function() {
+       //          return String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');
+       //      };
+       //
+       //      window.postMessage = patchedPostMessage;
+       //  };
+        //onMessage={this._onMessage} injectedJavaScript={patchPostMessageJsCode}
+
+       // const patchPostMessageJsCode = '(' + String(patchPostMessageFunction) + ')();window.postMessage(document.cookie)';
         return (
             <WebView source={{uri: this.pubLishUrl}} onNavigationStateChange={(e) => {
                 this.onNavigationStateChange(e)

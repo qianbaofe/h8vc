@@ -90,6 +90,10 @@ export default class Home extends Component {
     share = async()=>{
     //    alert(JSON.stringify(this._shareItem));
         let data = await NativeModules.NativeUtil.showDialog();
+        if (data.wechat === 3){
+            this.clickToReport();
+            return;
+        }
         if(data){
             WeChat.isWXAppInstalled().then((isInstalled) => {
                 if (isInstalled) {
@@ -105,7 +109,7 @@ export default class Home extends Component {
                                 Toast.show(error.message);
                             }
                         });
-                    } else{
+                    } else if(data.wechat === 2){
                         WeChat.shareToTimeline({
                             title: "【哈吧笑话分享】" + this._shareItem && this._shareItem.smalltext.replace(/^(\r\n)|(\n)|(\r)/,""),
                             description: this._shareItem && this._shareItem.smalltext.replace(/^(\r\n)|(\n)|(\r)/,""),

@@ -101,13 +101,13 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.windguo.h8.vc"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "2.0.0"
         ndk {
@@ -159,7 +159,7 @@ dependencies {
     compile project(':react-native-splash-screen')
     compile project(':react-native-code-push')
     compile fileTree(dir: "libs", include: ["*.jar"])
-    compile "com.android.support:appcompat-v7:25.0.1"
+    compile "com.android.support:appcompat-v7:26.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.4-7'
     compile project(':RCTWeChat')// Add this line only.
